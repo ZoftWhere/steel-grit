@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div id="queryResult" class="w-100">
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th th:each="e : ${tableHeader}" scope="col">
+                <th:block th:text="${e}"/>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row,stat : ${tableContent}">
+            <th scope="row" th:text="${stat.index} + 1"></th>
+            <td th:each="item : ${row}">
+                <th:block th:text="${item}"/>
+            </td>
+        </tr>
+        <tr th:if="not ${tableContent}">
+            <td scope="row"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
