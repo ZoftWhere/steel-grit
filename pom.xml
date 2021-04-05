@@ -158,11 +158,9 @@
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<!-- main compile against test JDK API with module-info -->
 							<release>${maven.compiler.test-jdk}</release>
 							<compileSourceRoots>
 								<sourceRoot>${project.basedir}/main-java</sourceRoot>
-								<sourceRoot>${project.basedir}/main-jpms</sourceRoot>
 							</compileSourceRoots>
 						</configuration>
 					</execution>
