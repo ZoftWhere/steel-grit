@@ -147,7 +147,8 @@
 						<phase>none</phase>
 						<configuration>
 							<!-- default against test JDK API -->
-							<release>${maven.compiler.test-jdk}</release>
+							<source>${maven.compiler.test-jdk}</source>
+							<target>${maven.compiler.test-jdk}</target>
 						</configuration>
 					</execution>
 					<execution>
@@ -488,7 +489,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>2.4.4</version>
 			</plugin>
-        </plugins>
+		</plugins>
 	</build>
 
 </project>
