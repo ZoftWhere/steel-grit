@@ -1,0 +1,10 @@
+spring:
+  resources:
+    static-locations: classpath:/public/,classpath:/static/
+
+  datasource:
+    url: jdbc:derby:../derby
+    username: PUBLIC
+    password:
+  jpa:
+    open-in-view: false
