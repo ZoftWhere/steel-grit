@@ -12,7 +12,7 @@ Project for web-based SQL queries.
 
 The ZoftWhere Steel Grit is a Maven project, that uses SpringBoot to launch a web server, ThymeLeaf for the 
 presentation layer, Derby DB for the persistence layer, and JDBC for running queries.  The web-based UI allows a user 
-to run a SQL query and see the results presented in the web-page.
+to run an SQL query and see the results presented in the web-page.
 
 
 ## License

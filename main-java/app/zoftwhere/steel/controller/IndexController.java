@@ -7,21 +7,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.thymeleaf.context.LazyContextVariable;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Controller
 public class IndexController {
 
     @Autowired
-    private Connection connection;
+    private DataSource dataSource;
 
     @GetMapping("/")
     public String getIndex(Model model) {
@@ -29,66 +30,55 @@ public class IndexController {
     }
 
     @PostMapping("/query")
-    public String postQuery(@RequestBody IndexQueryModel form, Model model) throws SQLException {
+    public String postQuery(@RequestBody IndexQueryModel form, Model model) {
         populateQueryResult(form.getInput(), model);
         return "query";
     }
 
-    private void populateQueryResult(String query, Model model) throws SQLException {
+    private void populateQueryResult(String query, Model model) {
+        model.addAttribute("dateTime", LocalDateTime.now().toString());
+
         if (query == null || query.isEmpty()) {
             return;
         }
+        model.addAttribute("query", query);
 
-        final ResultSet resultSet = connection.createStatement().executeQuery(query);
-        final ResultSetMetaData meta = resultSet.getMetaData();
-        final int count = meta.getColumnCount();
+        try (final Connection connection = dataSource.getConnection()) {
+            try (final Statement statement = connection.createStatement()) {
+                final boolean hasResultSet = statement.execute(query);
 
-        final List<String> tableHeader = new ArrayList<>(count);
-        for (int i = 1; i <= count; i++) {
-            tableHeader.add(meta.getColumnName(i));
-        }
-        model.addAttribute("tableHeader", tableHeader);
+                final int updateCount = statement.getUpdateCount();
+                if (updateCount > 0) {
+                    model.addAttribute("updateCount", "" + updateCount);
+                }
 
-        model.addAttribute("tableContent", new LazyContextVariable<Iterable<List<String>>>() {
-            @Override
-            protected Iterable<List<String>> loadValue() {
-                return () -> new Iterator<>() {
-                    private boolean loadedRow;
+                if (hasResultSet) {
+                    final ResultSet resultSet = statement.getResultSet();
+                    final ResultSetMetaData metaData = resultSet.getMetaData();
+                    final int count = metaData.getColumnCount();
 
-                    {
-                        try {
-                            loadedRow = resultSet.next();
-                        } catch (SQLException exception) {
-                            loadedRow = false;
-                            exception.printStackTrace();
+                    final List<String> header = new ArrayList<>(count);
+                    for (int i = 1; i <= count; i++) {
+                        header.add(metaData.getColumnName(i));
+                    }
+                    model.addAttribute("tableHeader", header);
+
+                    final List<List<String>> content = new ArrayList<>();
+                    while (resultSet.next()) {
+                        final List<String> row = new ArrayList<>(count);
+                        for (int i = 1; i <= count; i++) {
+                            row.add(resultSet.getString(i));
                         }
+                        content.add(row);
                     }
 
-                    @Override
-                    public boolean hasNext() {
-                        return loadedRow;
-                    }
-
-                    @Override
-                    public List<String> next() {
-                        if (!loadedRow) {
-                            return new ArrayList<>(count);
-                        }
-                        try {
-                            final List<String> list = new ArrayList<>(count);
-                            for (int i = 1; i <= count; i++) {
-                                list.add(resultSet.getString(i));
-                            }
-                            loadedRow = resultSet.next();
-                            return list;
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            return new ArrayList<>();
-                        }
-                    }
-                };
+                    model.addAttribute("tableContent", content);
+                }
             }
-        });
+        }
+        catch (SQLException exception) {
+            model.addAttribute("error", exception.getMessage());
+        }
     }
 
 }
