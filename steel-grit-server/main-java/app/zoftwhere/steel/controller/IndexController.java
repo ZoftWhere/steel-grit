@@ -1,5 +1,6 @@
 package app.zoftwhere.steel.controller;
 
+import app.zoftwhere.steel.MainConfiguration;
 import app.zoftwhere.steel.model.IndexQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,17 +23,29 @@ import java.util.List;
 public class IndexController {
 
     @Autowired
+    private MainConfiguration mainConfiguration;
+
+    @Autowired
     private DataSource dataSource;
 
     @GetMapping("/")
     public String getIndex(Model model) {
+        mapViewResources(model);
         return "index";
     }
 
     @PostMapping("/query")
     public String postQuery(@RequestBody IndexQueryModel form, Model model) {
+        mapViewResources(model);
         populateQueryResult(form.getInput(), model);
         return "query";
+    }
+
+    private void mapViewResources(Model model) {
+        model.addAttribute("resourceBootstrapCSS", mainConfiguration.getResourceBootstrapCSS());
+        model.addAttribute("resourceBootstrapJS", mainConfiguration.getResourceBootstrapJS());
+        model.addAttribute("resourceJQueryJS", mainConfiguration.getResourceJQueryJS());
+        model.addAttribute("resourcePopperJS", mainConfiguration.getResourcePopperJS());
     }
 
     private void populateQueryResult(String query, Model model) {
