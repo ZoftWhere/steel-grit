@@ -2,7 +2,9 @@ package app.zoftwhere.steel;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DatabaseQuickStart {
 
