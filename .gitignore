@@ -5,7 +5,12 @@
 /.idea/shelf
 /.idea/*.xml
 
+# Database files
+/derby
+
 # Maven target
+/steel-grit-server/_target
+/steel-grit-universe/_target
 /_target
 
 # Java compiled file

@@ -9,7 +9,7 @@ public class DatabaseQuickStart {
     @Test
     void quickStart() throws SQLException {
         // Quick start for Apache Derby.
-        try (Connection connection = DriverManager.getConnection("jdbc:derby:derby;create=true", "public", "")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:../derby;create=true", "public", "")) {
             assert connection != null;
         }
     }
