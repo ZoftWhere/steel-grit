@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +36,22 @@ public class IndexController {
     }
 
     private void populateQueryResult(String query, Model model) {
+        model.addAttribute("dateTime", LocalDateTime.now().toString());
+
         if (query == null || query.isEmpty()) {
             return;
         }
+        model.addAttribute("query", query);
 
         try (final Connection connection = dataSource.getConnection()) {
             try (final Statement statement = connection.createStatement()) {
                 final boolean hasResultSet = statement.execute(query);
+
+                final int updateCount = statement.getUpdateCount();
+                if (updateCount > 0) {
+                    model.addAttribute("updateCount", "" + updateCount);
+                }
+
                 if (hasResultSet) {
                     final ResultSet resultSet = statement.getResultSet();
                     final ResultSetMetaData metaData = resultSet.getMetaData();
@@ -67,8 +77,7 @@ public class IndexController {
             }
         }
         catch (SQLException exception) {
-            model.addAttribute("error", "steel.error.populate.sql.query");
-            model.addAttribute("exception", exception.getMessage());
+            model.addAttribute("error", exception.getMessage());
         }
     }
 

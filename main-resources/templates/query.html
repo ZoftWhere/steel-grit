@@ -28,30 +28,34 @@
         <p></p>
     </th:block>
 
-    <th:block th:if="${error}">
-        <table class="table">
-            <thead class="thead-light">
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col" colspan="2">Details</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:if="${query}">
             <tr>
-                <th scope="col" colspan="2">Error</th>
-                <th scope="col"></th>
+                <td>Query</td>
+                <td th:text="${query}"></td>
             </tr>
-            </thead>
-            <tbody>
-            <th:block th:if="${error}">
-                <tr>
-                    <td>Error</td>
-                    <td th:text="${error}"></td>
-                </tr>
-            </th:block>
-            <th:block th:if="${exception}">
-                <tr>
-                    <td>Message</td>
-                    <td th:text="${exception}"></td>
-                </tr>
-            </th:block>
-            </tbody>
-        </table>
-    </th:block>
+        </th:block>
+        <th:block th:if="${error}">
+            <tr>
+                <td>Error</td>
+                <td th:text="${error}"></td>
+            </tr>
+        </th:block>
+        <th:block th:if="${dateTime}">
+            <tr>
+                <td>Date</td>
+                <td th:text="${dateTime}"></td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
