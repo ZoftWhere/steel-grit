@@ -29,12 +29,12 @@ public class IndexController {
     }
 
     @PostMapping("/query")
-    public String postQuery(@RequestBody IndexQueryModel form, Model model) throws SQLException {
+    public String postQuery(@RequestBody IndexQueryModel form, Model model) {
         populateQueryResult(form.getInput(), model);
         return "query";
     }
 
-    private void populateQueryResult(String query, Model model) throws SQLException {
+    private void populateQueryResult(String query, Model model) {
         if (query == null || query.isEmpty()) {
             return;
         }
@@ -65,6 +65,10 @@ public class IndexController {
                     model.addAttribute("tableContent", content);
                 }
             }
+        }
+        catch (SQLException exception) {
+            model.addAttribute("error", "steel.error.populate.sql.query");
+            model.addAttribute("exception", exception.getMessage());
         }
     }
 
