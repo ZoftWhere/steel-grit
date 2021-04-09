@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
-		<relativePath/>
+		<groupId>app.zoftwhere.steel</groupId>
+		<artifactId>steel-grit</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>app.zoftwhere</groupId>
@@ -22,6 +22,8 @@
 	<url>https://github.com/ZoftWhere/steel-grit</url>
 
 	<properties>
+		<automatic.module.name>zoftwhere.steel.grit.server</automatic.module.name>
+
 		<!-- Settings: maven-resource-plugin -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.source.sourceEncoding>UTF-8</project.source.sourceEncoding>
@@ -35,37 +37,10 @@
 		<!-- Settings: maven-build -->
 		<maven.build.timestamp.format>yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;Z&apos;</maven.build.timestamp.format>
 
-		<!-- Settings: User defined plugin properties -->
-		<maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
-		<maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
-		<maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
-		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-		<maven-project-info-reports-plugin.version>3.1.1</maven-project-info-reports-plugin.version>
-		<maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-		<maven-site-plugin.version>3.9.1</maven-site-plugin.version>
-		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-
 		<!-- > -->
 		<org.apache.derby.version>10.15.2.0</org.apache.derby.version>
 		<surefire.printSummary>false</surefire.printSummary>
-		<org.junit.5.version>5.7.1</org.junit.5.version>
 	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>${org.junit.5.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -87,14 +62,12 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>${org.apache.derby.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbytools</artifactId>
 			<version>${org.apache.derby.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -207,77 +180,39 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-resources</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>main-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-testResources</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>test-resources</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>testResources</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<overwrite>false</overwrite>
-				</configuration>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${maven-install-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>default-test</id>
+						<id>main-install</id>
+						<phase>none</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
 						<configuration>
-							<argLine>
-								<!-- main-java packages -->
-								<!--&#45;&#45;add-opens&#32;module/package=ALL-UNNAMED-->
-								<!-- test-java packages -->
-								<!--&#45;&#45;add-opens&#32;module/package=ALL-UNNAMED-->
-								<!-- set time-zone for tests-->
-								-Duser.timezone=UTC
-							</argLine>
-							<forkCount>1</forkCount>
-							<useSystemClassLoader>false</useSystemClassLoader>
-							<reuseForks>true</reuseForks>
-							<printSummary>${surefire.printSummary}</printSummary>
-							<includes>
-								<!-- Include default classes -->
-								<include>**/*Test.java</include>
-							</includes>
+							<pomFile>${project.basedir}/pom.xml</pomFile>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
+							<file>${project.build.directory}/${project.build.finalName}.jar</file>
+							<packaging>jar</packaging>
+							<sources>${project.build.directory}/${project.build.finalName}-sources.jar</sources>
+							<javadoc>${project.build.directory}/${project.build.finalName}-javadoc.jar</javadoc>
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.junit.jupiter</groupId>
-						<artifactId>junit-jupiter-engine</artifactId>
-						<version>${org.junit.5.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
 			</plugin>
 
 			<plugin>
@@ -339,18 +274,6 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven-project-info-reports-plugin.version}</version>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>${maven-site-plugin.version}</version>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
@@ -362,7 +285,7 @@
 						</goals>
 						<configuration>
 							<release>${maven.compiler.main-jdk}</release>
-							<failOnWarnings>true</failOnWarnings>
+							<failOnWarnings>false</failOnWarnings>
 						</configuration>
 					</execution>
 					<execution>
@@ -392,25 +315,48 @@
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<quiet>true</quiet>
-					<failOnError>true</failOnError>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-						<manifest>
-							<addClasspath>false</addClasspath>
-						</manifest>
-						<manifestEntries>
-							<Build-DateTime>${maven.build.timestamp}</Build-DateTime>
-							<Implementation-Title>${project.artifactId}</Implementation-Title>
-							<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Specification-Title>${project.artifactId}</Specification-Title>
-							<Specification-Vendor>${project.groupId}</Specification-Vendor>
-							<Specification-Version>${project.version}</Specification-Version>
-						</manifestEntries>
-					</archive>
-				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>default-resources</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>main-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-testResources</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>test-resources</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>testResources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
 			</plugin>
 
 			<plugin>
@@ -460,39 +406,44 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>${maven-install-plugin.version}</version>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>main-install</id>
-						<phase>none</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
+						<id>default-test</id>
 						<configuration>
-							<pomFile>${project.basedir}/pom.xml</pomFile>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}</version>
-							<file>${project.build.directory}/${project.build.finalName}.jar</file>
-							<packaging>jar</packaging>
-							<sources>${project.build.directory}/${project.build.finalName}-sources.jar</sources>
-							<javadoc>${project.build.directory}/${project.build.finalName}-javadoc.jar</javadoc>
+							<argLine>
+								<!-- main-java packages -->
+								<!--&#45;&#45;add-opens&#32;module/package=ALL-UNNAMED-->
+								<!-- test-java packages -->
+								<!--&#45;&#45;add-opens&#32;module/package=ALL-UNNAMED-->
+								<!-- set time-zone for tests-->
+								-Duser.timezone=UTC
+							</argLine>
+							<forkCount>1</forkCount>
+							<useSystemClassLoader>false</useSystemClassLoader>
+							<reuseForks>true</reuseForks>
+							<printSummary>${surefire.printSummary}</printSummary>
+							<includes>
+								<!-- Include default classes -->
+								<include>**/*Test.java</include>
+							</includes>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven-deploy-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.jupiter</groupId>
+						<artifactId>junit-jupiter-engine</artifactId>
+						<version>${org.junit.5.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.4.4</version>
+				<version>${spring-boot.version}</version>
 			</plugin>
 		</plugins>
 	</build>

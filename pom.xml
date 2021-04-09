@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -23,6 +23,7 @@
 
 	<properties>
 		<automatic.module.name>zoftwhere.steel.grit</automatic.module.name>
+
 		<!-- Settings: maven-resource-plugin -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.source.sourceEncoding>UTF-8</project.source.sourceEncoding>
@@ -42,9 +43,36 @@
 		<maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-project-info-reports-plugin.version>3.1.1</maven-project-info-reports-plugin.version>
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<maven-site-plugin.version>3.9.1</maven-site-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+
+		<!-- > -->
+		<org.junit.5.version>5.7.1</org.junit.5.version>
+		<spring-boot.version>2.4.4</spring-boot.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${org.junit.5.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
@@ -68,236 +96,148 @@
 		</testResources>
 		<testOutputDirectory>_target/test-classes</testOutputDirectory>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>${maven-clean-plugin.version}</version>
-			</plugin>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven-clean-plugin.version}</version>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>main-compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>test-compile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<release>${maven.compiler.release}</release>
-					<compilerArgs>
-						<arg>-Xlint:all,-processing,-cast,-serial,-try</arg>
-					</compilerArgs>
-					<showWarnings>true</showWarnings>
-					<showDeprecation>true</showDeprecation>
-				</configuration>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<release>${maven.compiler.release}</release>
+						<compilerArgs>
+							<arg>-Xlint:all,-processing,-cast,-serial,-try</arg>
+						</compilerArgs>
+						<showWarnings>true</showWarnings>
+						<showDeprecation>true</showDeprecation>
+					</configuration>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven-dependency-plugin.version}</version>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven-deploy-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>deploy-artifact</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy-file</goal>
-						</goals>
-						<configuration>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}</version>
-							<pomFile>${project.basedir}/pom.xml</pomFile>
-							<file>${project.build.directory}/${project.build.finalName}.jar</file>
-							<packaging>jar</packaging>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven-deploy-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>default-deploy</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>deploy-artifact</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>deploy-file</goal>
+							</goals>
+							<configuration>
+								<groupId>${project.groupId}</groupId>
+								<artifactId>${project.artifactId}</artifactId>
+								<version>${project.version}</version>
+								<pomFile>${project.basedir}/pom.xml</pomFile>
+								<file>${project.build.directory}/${project.build.finalName}.jar</file>
+								<packaging>jar</packaging>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>${maven-install-plugin.version}</version>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${maven-install-plugin.version}</version>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>main-javadoc</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<quiet>true</quiet>
-							<show>package</show>
-							<failOnWarnings>false</failOnWarnings>
-							<failOnError>true</failOnError>
-							<sourceFileExcludes>
-								<exclude>module-info.java</exclude>
-							</sourceFileExcludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
+					<configuration>
+						<quiet>true</quiet>
+						<failOnError>true</failOnError>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+							<manifest>
+								<addClasspath>false</addClasspath>
+							</manifest>
+							<manifestEntries>
+								<Build-DateTime>${maven.build.timestamp}</Build-DateTime>
+								<Implementation-Title>${project.artifactId}</Implementation-Title>
+								<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+								<Implementation-Version>${project.version}</Implementation-Version>
+								<Specification-Title>${project.artifactId}</Specification-Title>
+								<Specification-Vendor>${project.groupId}</Specification-Vendor>
+								<Specification-Version>${project.version}</Specification-Version>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>main-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<classifier/>
-							<skipIfEmpty>false</skipIfEmpty>
-							<forceCreation>false</forceCreation>
-							<archive>
-								<addMavenDescriptor>false</addMavenDescriptor>
-								<manifest>
-									<addClasspath>false</addClasspath>
-								</manifest>
-								<manifestEntries>
-									<Main-Class/>
-									<Class-Path/>
-									<Dependencies/>
-									<Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-									<Implementation-Title>${project.artifactId}</Implementation-Title>
-									<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
-									<Implementation-Version>${project.version}</Implementation-Version>
-									<Specification-Title>${project.artifactId}</Specification-Title>
-									<Specification-Vendor>${project.groupId}</Specification-Vendor>
-									<Specification-Version>${project.version}</Specification-Version>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration/>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-plugin.version}</version>
+					<configuration>
+						<overwrite>true</overwrite>
+						<includeEmptyDirs>true</includeEmptyDirs>
+					</configuration>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-resources</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>main-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-						<configuration>
-							<overwrite>false</overwrite>
-							<includeEmptyDirs>true</includeEmptyDirs>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testResources</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>test-resources</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>testResources</goal>
-						</goals>
-						<configuration>
-							<overwrite>false</overwrite>
-							<includeEmptyDirs>true</includeEmptyDirs>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<overwrite>false</overwrite>
-				</configuration>
-			</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${maven-site-plugin.version}</version>
+				</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>main-source</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<classifier>sources</classifier>
-							<excludeResources>true</excludeResources>
-							<archive>
-								<addMavenDescriptor>false</addMavenDescriptor>
-								<manifest>
-									<addClasspath>false</addClasspath>
-								</manifest>
-								<manifestEntries>
-									<Main-Class/>
-									<Class-Path/>
-									<Dependencies/>
-									<Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-									<Implementation-Title>${project.artifactId}</Implementation-Title>
-									<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
-									<Implementation-Version>${project.version}</Implementation-Version>
-									<Specification-Title>${project.artifactId}</Specification-Title>
-									<Specification-Vendor>${project.groupId}</Specification-Vendor>
-									<Specification-Version>${project.version}</Specification-Version>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration/>
-			</plugin>
-		</plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>main-source</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+							<configuration>
+								<classifier>sources</classifier>
+								<excludeResources>true</excludeResources>
+								<archive>
+									<addMavenDescriptor>false</addMavenDescriptor>
+									<manifest>
+										<addClasspath>false</addClasspath>
+									</manifest>
+									<manifestEntries>
+										<Main-Class/>
+										<Class-Path/>
+										<Dependencies/>
+										<Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+										<Implementation-Title>${project.artifactId}</Implementation-Title>
+										<Implementation-Vendor>${project.groupId}</Implementation-Vendor>
+										<Implementation-Version>${project.version}</Implementation-Version>
+										<Specification-Title>${project.artifactId}</Specification-Title>
+										<Specification-Vendor>${project.groupId}</Specification-Vendor>
+										<Specification-Version>${project.version}</Specification-Version>
+									</manifestEntries>
+								</archive>
+							</configuration>
+						</execution>
+					</executions>
+					<configuration/>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
 	</build>
 
 </project>
