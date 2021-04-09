@@ -1,4 +1,4 @@
-package app.zoftwhere.steel;
+package app.zoftwhere.steel.server;
 
 import org.junit.jupiter.api.Test;
 

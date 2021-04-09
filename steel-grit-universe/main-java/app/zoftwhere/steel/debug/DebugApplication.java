@@ -1,4 +1,6 @@
-import app.zoftwhere.steel.MainApplication;
+package app.zoftwhere.steel.debug;
+
+import app.zoftwhere.steel.server.MainApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
