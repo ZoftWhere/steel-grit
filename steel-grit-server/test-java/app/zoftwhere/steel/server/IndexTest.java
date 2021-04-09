@@ -1,6 +1,6 @@
-package app.zoftwhere.steel;
+package app.zoftwhere.steel.server;
 
-import app.zoftwhere.steel.controller.IndexController;
+import app.zoftwhere.steel.server.controller.IndexController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

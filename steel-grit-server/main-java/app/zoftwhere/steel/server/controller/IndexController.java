@@ -1,6 +1,7 @@
-package app.zoftwhere.steel.controller;
+package app.zoftwhere.steel.server.controller;
 
-import app.zoftwhere.steel.model.IndexQueryModel;
+import app.zoftwhere.steel.server.MainConfiguration;
+import app.zoftwhere.steel.server.model.IndexQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,23 +19,68 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Index page controller.
+ *
+ * @since 1.0.0
+ */
 @Controller
 public class IndexController {
 
     @Autowired
+    private MainConfiguration mainConfiguration;
+
+    @Autowired
     private DataSource dataSource;
 
+    /**
+     * Index page.
+     *
+     * @param model Template view model.
+     * @return template name.
+     * @since 1.0.0
+     */
     @GetMapping("/")
     public String getIndex(Model model) {
+        mapViewResources(model);
         return "index";
     }
 
+    /**
+     * Query page.
+     *
+     * @param form  Index query form submitted.
+     * @param model Template view model.
+     * @return template name.
+     * @since 1.0.0
+     */
     @PostMapping("/query")
     public String postQuery(@RequestBody IndexQueryModel form, Model model) {
+        mapViewResources(model);
         populateQueryResult(form.getInput(), model);
         return "query";
     }
 
+    /**
+     * Private method for populating parameterized resource string.
+     *
+     * @param model Template view model.
+     * @since 2.0.0
+     */
+    private void mapViewResources(Model model) {
+        model.addAttribute("resourceBootstrapCSS", mainConfiguration.getResourceBootstrapCSS());
+        model.addAttribute("resourceBootstrapJS", mainConfiguration.getResourceBootstrapJS());
+        model.addAttribute("resourceJQueryJS", mainConfiguration.getResourceJQueryJS());
+        model.addAttribute("resourcePopperJS", mainConfiguration.getResourcePopperJS());
+    }
+
+    /**
+     * Private method for populating view with query result.
+     *
+     * @param query SQL query to execute.
+     * @param model Template view model.
+     * @since 1.0.0
+     */
     private void populateQueryResult(String query, Model model) {
         model.addAttribute("dateTime", LocalDateTime.now().toString());
 
