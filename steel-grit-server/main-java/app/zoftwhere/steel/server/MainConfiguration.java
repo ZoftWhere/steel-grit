@@ -1,4 +1,4 @@
-package app.zoftwhere.steel;
+package app.zoftwhere.steel.server;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -101,5 +101,6 @@ public class MainConfiguration {
     public void setResourcePopperJS(String resourcePopperJS) {
         this.resourcePopperJS = resourcePopperJS;
     }
+
 
 }

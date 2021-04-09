@@ -1,4 +1,4 @@
-package app.zoftwhere.steel.model;
+package app.zoftwhere.steel.server.model;
 
 /**
  * Model for Index Query form submission.

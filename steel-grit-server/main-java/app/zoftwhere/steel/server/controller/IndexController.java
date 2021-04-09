@@ -1,7 +1,7 @@
-package app.zoftwhere.steel.controller;
+package app.zoftwhere.steel.server.controller;
 
-import app.zoftwhere.steel.MainConfiguration;
-import app.zoftwhere.steel.model.IndexQueryModel;
+import app.zoftwhere.steel.server.MainConfiguration;
+import app.zoftwhere.steel.server.model.IndexQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
